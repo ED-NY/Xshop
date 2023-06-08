@@ -1,0 +1,45 @@
+* {
+    text-decoration: none;
+}
+
+/* 解决边界留白问题 */
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.el-header,
+.el-footer {
+    background-color: #545c64;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+}
+
+.el-aside {
+    background-color: #545c64;
+    color: #333;
+    text-align: center;
+    line-height: 200px;
+}
+
+.text {
+    font-size: 14px;
+    color: #545c64;
+}
+
+/* 设置主体部分最小值用于控制页面展示大小 */
+.el-main-set{
+    min-height: 700px;
+    max-height: 100%;
+}
+/* 侧边二级菜单大小 */
+.el_menu2_size{
+    font-size: 10px;
+    float: right;
+}
+
+/* 信息检索板块 */
+.search_line{
+    margin-top: 10px;
+}

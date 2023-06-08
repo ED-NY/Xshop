@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>查看用户列表</title>
+	<link rel="stylesheet" href="./css/Element-UI.css">
+	<link rel="stylesheet" href="./css/index.css">
+	<link rel="stylesheet" href="./css/common/common.css">
+	<script src="./js/vue.min.js"></script>
+	<script src="./js/Element-UI.js"></script>
+	<script src="./js/jquery-3.6.3.js"></script>
+	<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+	<script src="./js/axios.min.js"></script>
+</head>
+
+<body>
+	<div id="app">
+		<el-container>
+			<!-- 顶部菜单 -->
+			<el-header>
+				<el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect"
+					background-color="#545c64" text-color="#fff" active-text-color="#FFFF00">
+					<el-menu-item index="0" style="font-size: 30px;margin-left: 10px;">Xshop</el-menu-item>
+					<el-menu-item index="1" style="margin-left: 35px;">处理中心</el-menu-item>
+					<el-submenu index="2">
+						<template slot="title">数据分析</template>
+						<el-menu-item index="2-1">供应商分析</el-menu-item>
+						<el-menu-item index="2-2">订单分析</el-menu-item>
+						<el-menu-item index="2-3">用户分析</el-menu-item>
+					</el-submenu>
+					<el-menu-item index="3">上传数据</el-menu-item>
+					<el-menu-item index="4"><a href="https://www.ele.me" target="_blank">下载数据</a></el-menu-item>
+					<el-menu-item index="5" style="float: right;">
+						<el-avatar style="background-color: red;">{{username}}</el-avatar>
+					</el-menu-item>
+
+				</el-menu>
+			</el-header>
+			<el-container>
+				<!-- 侧边菜单 -->
+				<el-aside width="200px">
+					<el-menu default-active="1-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+						background-color="#545c64" text-color="#fff" active-text-color="#FFFF00">
+						<el-submenu index="1">
+							<template slot="title">
+								<i class="el-icon-user-solid"></i>
+								<span>用户管理</span>
+							</template>
+							<el-menu-item-group>
+								<template slot="title">用户详细信息管理</template>
+								<a href="index.html">
+									<el-menu-item index="1-1" class="el_menu2_size">变更用户列表</el-menu-item>
+								</a>
+								<el-menu-item index="1-2" class="el_menu2_size" @click="PassdialogFormVisible = true">
+									修改账户密码</el-menu-item>
+							</el-menu-item-group>
+							<el-menu-item-group>
+								<el-menu-item index="1-3" class="el_menu2_size" @click="handleEditAdd()">创建新的用户
+								</el-menu-item>
+							</el-menu-item-group>
+							<el-menu-item-group title="用户可视化分析">
+								<a style="color: #FFF;" href="./pages/userRoleAnalyse.html">
+									<el-menu-item index="1-4" class="el_menu2_size">
+										人员图表分析
+									</el-menu-item>
+								</a>
+							</el-menu-item-group>
+						</el-submenu>
+						<el-menu-item index="2">
+							<i class="el-icon-s-shop"></i>
+							<span slot="title">供应商管理</span>
+						</el-menu-item>
+						<el-menu-item index="3">
+							<i class="el-icon-document"></i>
+							<span slot="title">订单管理</span>
+						</el-menu-item>
+						<el-menu-item index="4">
+							<i class="el-icon-user"></i>
+							<span slot="title">角色管理</span>
+						</el-menu-item>
+						<el-menu-item index="5">
+							<i class="el-icon-location-outline"></i>
+							<span slot="title">地址管理</span>
+						</el-menu-item>
+						<el-menu-item index="6">
+							<i class="el-icon-turn-off"></i>
+							<span slot="title">退出登录</span>
+						</el-menu-item>
+					</el-menu>
+				</el-aside>
+				<!-- 主体 -->
+				<el-main class="el-main-set" v-loading="loading">
+
+					<div class="text">
+						<span class="el-icon-s-home">您当前所在位置：{{page_title}}</span>
+					</div>
+
+					<div class="search_line">
+						<el-form :inline="true" :model="formInline" class="demo-form-inline">
+							<el-form-item label="ID">
+								<el-input v-model="formInline.id" placeholder="检索ID"></el-input>
+							</el-form-item>
+							<el-form-item label="姓名">
+								<el-input v-model="formInline.user" placeholder="检索姓名"></el-input>
+							</el-form-item>
+							<el-form-item label="地址">
+								<el-input v-model="formInline.address" placeholder="检索地址"></el-input>
+							</el-form-item>
+							<el-form-item label="用户角色">
+								<!-- 进行角色查询 -->
+								<el-select v-model="formInline.role" placeholder="点击选择">
+									<el-option lable="全部" value="">全部</el-option>
+									<el-option v-for="item in roleOptions" :key="item.value" :label="item.label"
+										:value="item.value">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item>
+								<el-button type="primary" @click="onSubmit">查询</el-button>
+							</el-form-item>
+						</el-form>
+					</div>
+
+					<el-table ref="multipleTable" :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+						tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+						<!-- 选择标签 -->
+						<el-table-column type="selection" width="55"></el-table-column>
+						<!-- id -->
+						<el-table-column prop="id" label="ID" width="100"></el-table-column>
+						<!-- userCode -->
+						<el-table-column prop="userCode" label="账户名" width="100"></el-table-column>
+						<!-- userName -->
+						<el-table-column prop="userName" label="姓名" width="120"></el-table-column>
+						<el-table-column prop="role" label="角色" width="120"></el-table-column>
+						<el-table-column label="出生日期" width="120">
+							<template slot-scope="scope">{{ scope.row.birthday }}</template>
+						</el-table-column>
+						<!-- 电话 -->
+						<el-table-column prop="phone" label="电话" show-overflow-tooltip></el-table-column>
+						<!-- address -->
+						<el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
+
+						<el-table-column label="操作">
+							<!-- 操作列表用于变更表格信息 -->
+							<template slot-scope="scope">
+								<el-button size="mini" @click="open(scope.$index)">详情</el-button>
+								<el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+									style="color: #FFF;background-color: #409EFF;">编辑</el-button>
+
+								<!-- 数据库删除 -->
+								<el-popconfirm @confirm="handleDelete(scope.$index)" confirm-button-text='确认删除'
+									cancel-button-text='取消' icon="el-icon-info" icon-color="red" title="确定删除本用户吗？">
+									<el-button slot="reference" size="mini" type="danger">删除</el-button>
+								</el-popconfirm>
+							</template>
+						</el-table-column>
+					</el-table>
+
+					<!-- 分页 -->
+					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+						:current-page="currentPage" :page-sizes="[5, 10, 20, 40]" :page-size="pagesize"
+						layout="total, sizes, prev, pager, next, jumper" :total="tableData.length"
+						style="margin-top: 10px;">
+					</el-pagination>
+
+					<!-- 编辑弹出框 -->
+					<el-dialog title="修改信息" :visible.sync="ChangedialogFormVisible">
+						<el-form :model="Changeform">
+							<el-form-item label="出生日期" :label-width="ChangeformLabelWidth">
+								<el-date-picker v-model="Changeform.birthday" type="date" placeholder="选择日期"
+									value-format='yyyy-MM-dd'>
+								</el-date-picker>
+							</el-form-item>
+							<el-form-item label="姓名" :label-width="ChangeformLabelWidth">
+								<el-input v-model="Changeform.userName" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="手机号" :label-width="ChangeformLabelWidth">
+								<el-input v-model="Changeform.phone" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="地址" :label-width="ChangeformLabelWidth">
+								<el-input v-model="Changeform.address" autocomplete="off"></el-input>
+							</el-form-item>
+						</el-form>
+
+						<div slot="footer" class="dialog-footer">
+							<el-button @click="ChangedialogFormVisible = false">取 消</el-button>
+							<el-button type="primary" :plain="true" @click="handleUpdate()">确定修改</el-button>
+						</div>
+					</el-dialog>
+					<!-- 修改当前账户对话框 -->
+					<el-dialog title="修改当前账户密码" :visible.sync="PassdialogFormVisible" width="30%" center>
+						<el-form :model="Passform" status-icon :rules="rules" ref="Passform" label-width="90px"
+							style="margin-top: 50px;" class="demo-ruleForm">
+							<el-form-item label="新密码" prop="pass">
+								<el-input type="password" v-model="Passform.pass" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="确认新密码" prop="checkPass">
+								<el-input type="password" v-model="Passform.checkPass" autocomplete="off"></el-input>
+							</el-form-item>
+						</el-form>
+						<div slot="footer" class="dialog-footer">
+							<el-button @click="resetForm('Passform')">重置</el-button>
+							<el-button @click="PassdialogFormVisible = false">取 消</el-button>
+							<el-button type="primary" @click="submitForm('Passform')">提交</el-button>
+						</div>
+					</el-dialog>
+					<!-- 添加新的用户 -->
+					<el-dialog title="添加新用户" :visible.sync="AdddialogFormVisible">
+						<el-form :inline="true" :model="Addform" status-icon :rules="rules" ref="Addform"
+							class="demo-ruleForm">
+							<el-form-item label="账户名:" :label-width="AddformLabelWidth" prop="userCode">
+								<el-input v-model="Addform.userCode" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="密码:" :label-width="AddformLabelWidth" prop="addpass">
+								<el-input type="password" v-model="Addform.pass" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="真实姓名:" :label-width="AddformLabelWidth" prop='userName'>
+								<el-input v-model="Addform.userName" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="手机号:" :label-width="AddformLabelWidth" prop="phone">
+								<el-input v-model="Addform.phone" autocomplete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="出生日期:" :label-width="AddformLabelWidth">
+								<el-date-picker v-model="Addform.birthday" type="date" placeholder="选择日期"
+									value-format='yyyy-MM-dd'>
+								</el-date-picker>
+							</el-form-item>
+							<el-form-item label="用户角色:" :label-width="AddformLabelWidth" prop="role">
+								<el-select v-model="Addform.role" placeholder="点击选择">
+									<el-option v-for="item in roleOptions" :key="item.value" :label="item.label"
+										:value="item.value">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="性别:" :label-width="AddformLabelWidth" prop="gender">
+								<el-select v-model="Addform.gender" placeholder="点击选择">
+									<el-option label="女" value="1"></el-option>
+									<el-option label="男" value="2"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="地址:" :label-width="AddformLabelWidth">
+								<el-input v-model="Addform.address" autocomplete="off"></el-input>
+							</el-form-item>
+						</el-form>
+						<div slot="footer" class="dialog-footer">
+							<el-button @click="resetForm('Addform')">重置</el-button>
+							<el-button @click="AdddialogFormVisible = false">取 消</el-button>
+							<el-button type="primary" :plain="true" @click="handleAdd('Addform')">添加</el-button>
+						</div>
+					</el-dialog>
+				</el-main>
+			</el-container>
+			<el-footer style="color:white;font-size:20px;">Xshop超市管理系统</el-footer>
+		</el-container>
+	</div>
+</body>
+<script src="./js/pageJs/index.js"></script>
+
+</html>

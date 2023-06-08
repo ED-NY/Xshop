@@ -1,0 +1,14 @@
+.in_line{
+    margin-top: 50px;
+    width: 98%;
+    height: 500px;
+}
+
+.box-card1 {
+    width: 600px;
+    float: left;
+}
+.box-card2{
+    width: 600px;
+    float: right;
+}
