@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>供应商列表</title>
+    <link rel="stylesheet" href="../css/Element-UI.css">
+    <link rel="stylesheet" href="../css/provider.css">
+    <link rel="stylesheet" href="../css/common/common.css">
+    <script src="../js/vue.min.js"></script>
+    <script src="../js/Element-UI.js"></script>
+    <script src="../js/jquery-3.6.3.js"></script>
+    <script src="../js/axios.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <el-container>
+            <!-- 顶部菜单 -->
+            <el-header>
+                <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect"
+                    background-color="#343a40" text-color="#fff" active-text-color="#FFFF00">
+                    <el-menu-item index="0" style="font-size: 30px;margin-left: 10px;">Xshop</el-menu-item>
+                    <el-menu-item index="1" style="margin-left: 35px;"><a href="user.html">处理中心</a></el-menu-item>
+                    <el-submenu index="2">
+                        <template slot="title">数据分析</template>
+                        <a href="providerAnalyse.html">
+                            <el-menu-item index="2-1">供应商分析</el-menu-item>
+                        </a>
+                        <a href="billAnalyse.html">
+                            <el-menu-item index="2-2">订单分析</el-menu-item>
+                        </a>
+                        <a href="userRoleAnalyse.html">
+                            <el-menu-item index="2-3">用户分析</el-menu-item>
+                        </a>
+                    </el-submenu>
+                    <el-menu-item index="3"><a href="upload.html">上传数据</a></el-menu-item>
+                    <el-menu-item index="4"><a href="download.html">下载数据</a></el-menu-item>
+                    <el-menu-item index="5" style="float: right;">
+                        <el-avatar style="background-color: red;">{{username}}</el-avatar>
+                    </el-menu-item>
+
+                </el-menu>
+            </el-header>
+            <el-container>
+                <!-- 侧边菜单 -->
+                <el-aside width="200px">
+                    <el-menu default-active="2-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+                        background-color="#343a40" text-color="#fff" active-text-color="#FFFF00">
+                        <el-submenu index="1">
+                            <template slot="title">
+                                <i class="el-icon-user-solid"></i>
+                                <span>用户管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <template slot="title">用户详细信息管理</template>
+                                <a style="color: #FFF;" href="./user.html">
+                                    <el-menu-item index="1-1" class="el_menu2_size">
+                                        变更用户列表
+                                    </el-menu-item>
+                                </a>
+                                <a href="./user.html?id=01">
+                                    <el-menu-item index="1-2" class="el_menu2_size">修改账户密码</el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="./user.html?id=02">
+                                    <el-menu-item index="1-3" class="el_menu2_size">创建新的用户</el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group title="用户可视化分析">
+                                <el-menu-item index="1-4" class="el_menu2_size">
+                                    <a>人员图表分析</a>
+                                </el-menu-item>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-submenu index="2">
+                            <template slot="title">
+                                <i class="el-icon-s-shop"></i>
+                                <span slot="title">供应商管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <a href="provider.html">
+                                    <el-menu-item index="2-1" class="el_menu2_size">
+                                        变更供应商列表
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="provider.html?id=01">
+                                    <el-menu-item index="2-2" class="el_menu2_size">
+                                        添加新的供应商
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="providerAnalyse.html">
+                                    <el-menu-item index="2-3" class="el_menu2_size">
+                                        供应商图表分析
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-submenu index="3">
+                            <template slot="title">
+                                <i class="el-icon-document"></i>
+                                <span slot="title">订单管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <a href="bill.html">
+                                    <el-menu-item index="3-1" class="el_menu2_size">
+                                        变更订单列表
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="bill.html?id=01">
+                                    <el-menu-item index="3-2" class="el_menu2_size">
+                                        添加新的订单
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="billAnalyse.html">
+                                    <el-menu-item index="3-3" class="el_menu2_size">
+                                        订单分析统计
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-submenu index="4">
+                            <template slot="title">
+                                <i class="el-icon-user"></i>
+                                <span slot="title">角色管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <a href="role.html">
+                                    <el-menu-item index="4-1" class="el_menu2_size">
+                                        变更角色列表
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="role.html?id=01">
+                                    <el-menu-item index="4-2" class="el_menu2_size">
+                                        添加新的角色
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-submenu index="5">
+                            <template slot="title">
+                                <i class="el-icon-location-outline"></i>
+                                <span slot="title">地址管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <a href="address.html">
+                                    <el-menu-item index="5-1" class="el_menu2_size">
+                                        变更地点列表
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="address.html?id=01">
+                                    <el-menu-item index="5-2" class="el_menu2_size">
+                                        添加新的地点
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-menu-item index="6">
+                            <i class="el-icon-turn-off"></i>
+                            <span slot="title">退出登录</span>
+                        </el-menu-item>
+                    </el-menu>
+                </el-aside>
+                <!-- 主体 -->
+                <el-main class="el-main-set" v-loading="loading">
+
+                    <div class="text">
+                        <span class="el-icon-s-home">您当前所在位置：{{page_title}}</span>
+                    </div>
+
+                    <div class="search_line">
+                        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                            <el-form-item label="ID" style="margin-left: 30px;">
+                                <el-input v-model="formInline.id" placeholder="检索ID"></el-input>
+                            </el-form-item>
+                            <el-form-item label="供应商编号">
+                                <el-input v-model="formInline.proCode" placeholder="检索供应商编号"></el-input>
+                            </el-form-item>
+                            <el-form-item label="供应商名">
+                                <el-input v-model="formInline.proName" placeholder="检索供应商名"></el-input>
+                            </el-form-item>
+                            <el-form-item label="供应描述">
+                                <el-input v-model="formInline.proDesc" placeholder="检索供应物品"></el-input>
+                            </el-form-item>
+                            <el-form-item label="联系人">
+                                <el-input v-model="formInline.proContact" placeholder="检索联系人"></el-input>
+                            </el-form-item>
+                            <el-form-item label="电话号">
+                                <el-input v-model="formInline.proPhone" placeholder="检索号码"></el-input>
+                            </el-form-item>
+                            <el-form-item label="供应商地址">
+                                <el-input v-model="formInline.proAddress" placeholder="检索地址"></el-input>
+                            </el-form-item>
+                            <el-form-item label="供应商传真">
+                                <el-input v-model="formInline.proFax" placeholder="检索传真"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="onSubmit">查询</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+
+                    <el-table ref="multipleTable" :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                        tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+                        <el-table-column prop="id" label="ID" width="50"></el-table-column>
+                        <!-- proCode -->
+                        <el-table-column prop="proCode" label="编号" width="100"></el-table-column>
+                        <!-- proName -->
+                        <el-table-column prop="proName" label="供应商名" width="120"></el-table-column>
+
+                        <el-table-column prop="proDesc" label="供应表述" show-overflow-tooltip></el-table-column>
+                        <el-table-column prop="proContact" label="联系人" width="100px" show-overflow-tooltip>
+                        </el-table-column>
+                        <el-table-column prop="proPhone" label="联系号码" width="100px" show-overflow-tooltip>
+                        </el-table-column>
+                        <el-table-column prop="proAddress" label="供应商地址" show-overflow-tooltip></el-table-column>
+                        <el-table-column prop="proFax" label="传真" width="100px" show-overflow-tooltip></el-table-column>
+
+                        <el-table-column label="操作">
+                            <!-- 操作列表用于变更表格信息 -->
+                            <template slot-scope="scope">
+                                <el-button size="mini" @click="open(scope.$index)">详情</el-button>
+                                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+                                    style="color: #FFF;background-color: #409EFF;">编辑</el-button>
+
+                                <!-- 数据库删除 -->
+                                <el-popconfirm @confirm="handleDelete(scope.$index)" confirm-button-text='确认删除'
+                                    cancel-button-text='取消' icon="el-icon-info" icon-color="red" title="确定删除本用户吗？">
+                                    <el-button slot="reference" size="mini" type="danger">删除</el-button>
+                                </el-popconfirm>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                    <!-- 分页 -->
+                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                        :current-page="currentPage" :page-sizes="[5, 10, 20, 40]" :page-size="pagesize"
+                        layout="total, sizes, prev, pager, next, jumper" :total="tableData.length"
+                        style="margin-top: 10px;">
+                    </el-pagination>
+
+                    <!-- 编辑弹出框 -->
+                    <el-dialog title="修改信息" :visible.sync="ChangedialogFormVisible">
+                        <el-form :model="Changeform">
+                            <el-form-item label="供应商编号" :label-width="ChangeformLabelWidth">
+                                <el-input v-model="Changeform.proCode" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="供应商名" :label-width="ChangeformLabelWidth">
+                                <el-input v-model="Changeform.proName" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="供应商描述" :label-width="ChangeformLabelWidth">
+                                <el-input v-model="Changeform.proDesc" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="联系人" :label-width="ChangeformLabelWidth">
+                                <el-input v-model="Changeform.proContact" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="联系号码" :label-width="ChangeformLabelWidth">
+                                <el-input v-model="Changeform.proPhone" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="供应商地址" :label-width="ChangeformLabelWidth">
+                                <el-input v-model="Changeform.proAddress" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="传真" :label-width="ChangeformLabelWidth">
+                                <el-input v-model="Changeform.proFax" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </el-form>
+
+                        <div slot="footer" class="dialog-footer">
+                            <el-button @click="ChangedialogFormVisible = false">取 消</el-button>
+                            <el-button type="primary" :plain="true" @click="handleUpdate()">确定修改</el-button>
+                        </div>
+                    </el-dialog>
+
+                    <!-- 添加供应商 -->
+                    <el-dialog title="添加新供应商" :visible.sync="AdddialogFormVisible">
+                        <el-form :inline="true" :model="Addform" status-icon :rules="rules" ref="Addform"
+                            class="demo-ruleForm">
+                            <el-form-item label="编号:" :label-width="AddformLabelWidth">
+                                <el-input v-model="Addform.proCode" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="供应商名:" :label-width="AddformLabelWidth">
+                                <el-input v-model="Addform.proName" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="联系人:" :label-width="AddformLabelWidth">
+                                <el-input v-model="Addform.proContact" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="联系号码:" :label-width="AddformLabelWidth">
+                                <el-input v-model="Addform.proPhone" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="供应商地址:" :label-width="AddformLabelWidth">
+                                <el-input v-model="Addform.proAddress" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="传真:" :label-width="AddformLabelWidth">
+                                <el-input v-model="Addform.proFax" autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="描述:" :label-width="AddformLabelWidth">
+                                <el-input v-model="Addform.proDesc" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </el-form>
+                        <div slot="footer" class="dialog-footer">
+                            <el-button @click="resetForm('Addform')">重置</el-button>
+                            <el-button @click="AdddialogFormVisible = false">取 消</el-button>
+                            <el-button type="primary" :plain="true" @click="handleAdd('Addform')">添加</el-button>
+                        </div>
+                    </el-dialog>
+                </el-main>
+            </el-container>
+            <el-footer style="color:white;font-size:20px;">Xshop超市管理系统</el-footer>
+        </el-container>
+    </div>
+</body>
+<script src="../js/pageJs/provider.js"></script>
+
+</html>

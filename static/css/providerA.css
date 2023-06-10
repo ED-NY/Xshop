@@ -1,0 +1,11 @@
+.in_line{
+    margin-top: 50px;
+    width: 98%;
+    height: 500px;
+}
+
+.box-card1 {
+    width: 800px; height: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}

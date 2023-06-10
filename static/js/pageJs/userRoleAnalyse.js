@@ -2,7 +2,8 @@ const vm = new Vue({
     el: '#app',
     data() {
         return {
-            username: 'admin',
+            userId: '',
+            username: '',
 
             activeIndex2: '0',
             formLabelWidth: '120px',

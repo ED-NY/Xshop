@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>供应商图表分析</title>
+    <link rel="stylesheet" href="../css/Element-UI.css">
+    <link rel="stylesheet" href="../css/providerA.css">
+    <link rel="stylesheet" href="../css/common/common.css">
+    <script src="../js/vue.min.js"></script>
+    <script src="../js/Element-UI.js"></script>
+    <script src="../js/jquery-3.6.3.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <el-container>
+            <!-- 顶部菜单 -->
+            <el-header>
+                <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect"
+                    background-color="#343a40" text-color="#fff" active-text-color="#FFFF00">
+                    <el-menu-item index="0" style="font-size: 30px;margin-left: 10px;">Xshop</el-menu-item>
+                    <el-menu-item index="1" style="margin-left: 35px;"><a href="user.html">处理中心</a></el-menu-item>
+                    <el-submenu index="2">
+                        <template slot="title">数据分析</template>
+                        <a href="providerAnalyse.html">
+                            <el-menu-item index="2-1">供应商分析</el-menu-item>
+                        </a>
+                        <a href="billAnalyse.html">
+                            <el-menu-item index="2-2">订单分析</el-menu-item>
+                        </a>
+                        <a href="userRoleAnalyse.html">
+                            <el-menu-item index="2-3">用户分析</el-menu-item>
+                        </a>
+                    </el-submenu>
+                    <el-menu-item index="3"><a href="upload.html">上传数据</a></el-menu-item>
+                    <el-menu-item index="4"><a href="download.html">下载数据</a></el-menu-item>
+                    <el-menu-item index="5" style="float: right;">
+                        <el-avatar style="background-color: red;">{{username}}</el-avatar>
+                    </el-menu-item>
+                </el-menu>
+            </el-header>
+            <el-container>
+                <!-- 侧边菜单 -->
+                <el-aside width="200px">
+                    <el-menu default-active="2-3" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+                        background-color="#343a40" text-color="#fff" active-text-color="#FFFF00">
+                        <el-submenu index="1">
+                            <template slot="title">
+                                <i class="el-icon-user-solid"></i>
+                                <span>用户管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <template slot="title">用户详细信息管理</template>
+                                <a style="color: #FFF;" href="./user.html">
+                                    <el-menu-item index="1-1" class="el_menu2_size">
+                                        变更用户列表
+                                    </el-menu-item>
+                                </a>
+                                <a href="./user.html?id=01">
+                                    <el-menu-item index="1-2" class="el_menu2_size">修改账户密码</el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="./user.html?id=02">
+                                    <el-menu-item index="1-3" class="el_menu2_size">创建新的用户</el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group title="用户可视化分析">
+                                <a href="./userRoleAnalyse.html">
+                                    <el-menu-item index="1-4" class="el_menu2_size">
+                                        人员图表分析
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-submenu index="2">
+                            <template slot="title">
+                                <i class="el-icon-s-shop"></i>
+                                <span slot="title">供应商管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <a href="provider.html">
+                                    <el-menu-item index="2-1" class="el_menu2_size">
+                                        变更供应商列表
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="provider.html?id=01">
+                                    <el-menu-item index="2-2" class="el_menu2_size">
+                                        添加新的供应商
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="providerAnalyse.html">
+                                    <el-menu-item index="2-3" class="el_menu2_size">
+                                        供应商图表分析
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-submenu index="3">
+                            <template slot="title">
+                                <i class="el-icon-document"></i>
+                                <span slot="title">订单管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <a href="bill.html">
+                                    <el-menu-item index="3-1" class="el_menu2_size">
+                                        变更订单列表
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="bill.html?id=01">
+                                    <el-menu-item index="3-2" class="el_menu2_size">
+                                        添加新的订单
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="billAnalyse.html">
+                                    <el-menu-item index="3-3" class="el_menu2_size">
+                                        订单分析统计
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-submenu index="4">
+                            <template slot="title">
+                                <i class="el-icon-user"></i>
+                                <span slot="title">角色管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <a href="role.html">
+                                    <el-menu-item index="4-1" class="el_menu2_size">
+                                        变更角色列表
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="role.html?id=01">
+                                    <el-menu-item index="4-2" class="el_menu2_size">
+                                        添加新的角色
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-submenu index="5">
+                            <template slot="title">
+                                <i class="el-icon-location-outline"></i>
+                                <span slot="title">地址管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <a href="address.html">
+                                    <el-menu-item index="5-1" class="el_menu2_size">
+                                        变更地点列表
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <a href="address.html?id=01">
+                                    <el-menu-item index="5-2" class="el_menu2_size">
+                                        添加新的地点
+                                    </el-menu-item>
+                                </a>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-menu-item index="6">
+                            <i class="el-icon-turn-off"></i>
+                            <span slot="title">退出登录</span>
+                        </el-menu-item>
+                    </el-menu>
+                </el-aside>
+                <!-- 主体 -->
+                <el-main class="el-main-set">
+                    <div class="text">
+                        <span class="el-icon-s-home">您当前所在位置：{{page_title}}</span>
+                    </div>
+                    <div class="in_line">
+                        <!-- 供应商地址分布图 -->
+                        <el-card class="box-card1">
+                            <div id="map" style="width: 800px; height: 600px;"></div>
+                        </el-card>
+                    </div>
+                </el-main>
+            </el-container>
+            <el-footer style="color:white;font-size:20px;">Xshop超市管理系统</el-footer>
+        </el-container>
+    </div>
+</body>
+<script src="../js/pageJs/providerAnalyse.js"></script>
+
+</html>

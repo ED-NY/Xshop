@@ -10,14 +10,14 @@ body{
 
 .el-header,
 .el-footer {
-    background-color: #545c64;
+    background-color: #343a40;
     color: #333;
     text-align: center;
     line-height: 60px;
 }
 
 .el-aside {
-    background-color: #545c64;
+    background-color: #343a40;
     color: #333;
     text-align: center;
     line-height: 200px;
@@ -25,7 +25,7 @@ body{
 
 .text {
     font-size: 14px;
-    color: #545c64;
+    color: #343a40;
 }
 
 /* 设置主体部分最小值用于控制页面展示大小 */

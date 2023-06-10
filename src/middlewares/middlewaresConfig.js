@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 
 module.exports = app => {
     console.log("中间件启动");

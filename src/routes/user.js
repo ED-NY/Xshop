@@ -1,4 +1,5 @@
 const express = require("express");
+const jwt = require('jsonwebtoken');
 const app = express.Router();
 const DB_Model = require("../config/db/db_model"); //数据库执行
 
@@ -156,6 +157,31 @@ app.post('/addUser',(req,res)=>{
             console.log("添加用户失败");
         })
     
+})
+
+
+//登录生成token返回用于验证用户
+app.post('/getLogin',(req,res)=>{
+    var login = 'select id,userCode from smbms_user where userCode = ? and userPassword = ?';
+    loginArr = [req.body.userCode,req.body.pass];
+    DB_Model.exeSql(login,loginArr).then(
+        result => {
+            const token = jwt.sign({name:'tom'},'aaaa', { expiresIn: 60 * 60 });
+            result["token"] = token;
+            res.send(result);
+        }
+    ).catch((err)=>{console.log('登录失败')});
+})
+
+//访问其他页面的验证
+app.post('/judge',(req,res)=>{
+    var judges = 'select id,userCode from smbms_user where id = ? and userCode = ?';
+    judgearr = [req.body.id,req.body.userCode];
+    DB_Model.exeSql(judges,judgearr).then(
+        result=>{
+            res.send(result);
+        }
+    ).catch((err)=>{console.log('验证失败')});
 })
 
 module.exports = app;
