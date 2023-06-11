@@ -116,10 +116,10 @@ app.post("/getUpdate", (req, res) => {
     console.log(updateSql);
     DB_Model.exeSql(updateSql, uparr).then(
         result => {
-            console.log("更新用户信息成功");
+            console.log("更新供应商信息成功");
             res.send(result);
         }).catch((err) => {
-            console.log("更新用户信息失败")
+            console.log("更新供应商信息失败")
         })
 });
 

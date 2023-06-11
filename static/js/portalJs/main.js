@@ -155,9 +155,6 @@ $(function() {
     wow.init();
     
     
-    //===== Back to top
-    
-    // Show or hide the sticky footer button
     $(window).on('scroll', function(event) {
         if($(this).scrollTop() > 600){
             $('.back-to-top').fadeIn(200)
@@ -166,8 +163,6 @@ $(function() {
         }
     });
     
-    
-    //Animate the scroll to yop
     $('.back-to-top').on('click', function(event) {
         event.preventDefault();
         
